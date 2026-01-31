@@ -1,6 +1,12 @@
 <?php
 
-/* Register Settings */
+/**
+ * Register Settings 
+ * 
+ * settings menu page: wp-admin > settings > global settings.
+ * 
+ * register_setting('your_theme_group_name', 'key_to_save_in_DB_PREFIX_options', 'sanitize_callback');
+ */
 function mc_wp_theme_register_settings() {
 
     // Header

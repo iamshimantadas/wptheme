@@ -59,22 +59,6 @@ add_filter('wp_editor_set_quality', function ($arg) {
 //     )
 // );
 
-// add classes to <a> tags inside <li> tags
-// function add_menu_link_class($atts, $item, $args)
-// {
-//     $atts['class'] = 'nav-item nav-link';
-//     return $atts;
-// }
-// add_filter('nav_menu_link_attributes', 'add_menu_link_class', 1, 3);
-
-
-/** set time login cookie expiration */
-// function user_auth_remember_me($expires)
-// {
-//     return 30 * 24 * 60 * 60; // Set the time in seconds ~ set to 30 days.
-// }
-// add_filter('auth_cookie_expiration', 'user_auth_remember_me');
-
 
 /** show template file name in admin menu bar */
 function display_template_file_in_admin_bar($wp_admin_bar)
