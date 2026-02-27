@@ -49,9 +49,116 @@ function mc_wp_theme_add_options_page() {
 add_action('admin_menu', 'mc_wp_theme_add_options_page');
 
 
+/* Enqueue Media Uploader Scripts */
+function mc_wp_theme_enqueue_media_uploader($hook) {
+    if ('settings_page_global-settings' !== $hook) {
+        return;
+    }
+    
+    wp_enqueue_media();
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('jquery-ui-core');
+    
+    // Add custom JavaScript for media uploader with jQuery dependency
+    wp_add_inline_script('jquery', '
+        jQuery(document).ready(function($) {
+            // Function to handle media upload for any button
+            function setupMediaUploader(buttonId, inputId, previewId) {
+                // Upload button click
+                $("body").on("click", buttonId, function(e) {
+                    e.preventDefault();
+                    
+                    var customUploader = wp.media({
+                        title: "Select or Upload Image",
+                        library: {
+                            type: "image"
+                        },
+                        button: {
+                            text: "Use this image"
+                        },
+                        multiple: false
+                    });
+                    
+                    customUploader.on("select", function() {
+                        var attachment = customUploader.state().get("selection").first().toJSON();
+                        
+                        // Store the full image URL
+                        var imageUrl = attachment.url;
+                        
+                        // If you want a specific size, you can use:
+                        // var imageUrl = attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url;
+                        
+                        $(inputId).val(imageUrl);
+                        
+                        // Show preview
+                        $(previewId).html(\'<img src="\' + imageUrl + \'" style="max-width: 200px; max-height: 200px; margin-top: 10px; border: 1px solid #ddd; padding: 5px; background: #f9f9f9;">\');
+                        
+                        // Show remove button
+                        $(buttonId + "-remove").show();
+                    });
+                    
+                    customUploader.open();
+                });
+                
+                // Remove image
+                $("body").on("click", buttonId + "-remove", function(e) {
+                    e.preventDefault();
+                    $(inputId).val("");
+                    $(previewId).empty();
+                    $(this).hide();
+                });
+            }
+            
+            // Setup uploaders for header and footer images
+            setupMediaUploader("#upload_header_image", "#mc_header_site_image", "#header_image_preview");
+            setupMediaUploader("#upload_footer_image", "#mc_footer_site_image", "#footer_image_preview");
+        });
+    ');
+    
+    // Add CSS
+    wp_add_inline_style('wp-admin', '
+        .image-preview {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .remove-image {
+            margin-left: 10px;
+            color: #a00;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .remove-image:hover {
+            color: #dc3232;
+            text-decoration: underline;
+        }
+        .upload-button {
+            margin-right: 5px;
+        }
+        .image-url-field {
+            margin-top: 10px;
+            width: 100%;
+        }
+        .image-url-field input {
+            width: 100%;
+            max-width: 500px;
+        }
+    ');
+}
+add_action('admin_enqueue_scripts', 'mc_wp_theme_enqueue_media_uploader');
+
 /* Page Callback */
 function mc_wp_theme_settings_page() {
-    $tab = $_GET['tab'] ?? 'header';
+    $tab = isset($_GET['tab']) ? $_GET['tab'] : 'header';
     ?>
     <div class="wrap">
         <h1>Global Theme Settings</h1>
@@ -67,40 +174,86 @@ function mc_wp_theme_settings_page() {
             <?php
 
             if ($tab === 'header') {
-                settings_fields('mc_wp_theme_header_group'); ?>
+                settings_fields('mc_wp_theme_header_group'); 
+                $header_image = get_option('mc_header_site_image');
+                ?>
                 <table class="form-table">
                     <tr>
-                        <th>Header Image URL</th>
-                        <td><input type="url" class="regular-text" name="mc_header_site_image" value="<?php echo esc_attr(get_option('mc_header_site_image')); ?>"></td>
+                        <th scope="row">Header Image</th>
+                        <td>
+                            <div class="upload-container">
+                                <button type="button" class="button button-primary upload-button" id="upload_header_image">
+                                    <span class="dashicons dashicons-upload" style="vertical-align: middle;"></span> Select or Upload Image
+                                </button>
+                                <button type="button" class="button remove-image" id="upload_header_image-remove" <?php echo empty($header_image) ? 'style="display:none;"' : ''; ?>>
+                                    <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span> Remove Image
+                                </button>
+                                
+                                <div class="image-url-field">
+                                    <label>Image URL:</label>
+                                    <input type="url" class="regular-text" name="mc_header_site_image" id="mc_header_site_image" value="<?php echo esc_url($header_image); ?>" readonly>
+                                    <p class="description">URL is automatically filled when you upload an image</p>
+                                </div>
+                                
+                                <div class="image-preview" id="header_image_preview">
+                                    <?php if (!empty($header_image)): ?>
+                                        <img src="<?php echo esc_url($header_image); ?>" alt="Header Image Preview">
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <th>CTA Button Title</th>
+                        <th scope="row">CTA Button Title</th>
                         <td><input type="text" class="regular-text" name="mc_header_cta_title" value="<?php echo esc_attr(get_option('mc_header_cta_title')); ?>"></td>
                     </tr>
                     <tr>
-                        <th>CTA Button URL</th>
+                        <th scope="row">CTA Button URL</th>
                         <td><input type="url" class="regular-text" name="mc_header_cta_url" value="<?php echo esc_attr(get_option('mc_header_cta_url')); ?>"></td>
                     </tr>
                 </table>
             <?php }
 
             if ($tab === 'footer') {
-                settings_fields('mc_wp_theme_footer_group'); ?>
+                settings_fields('mc_wp_theme_footer_group'); 
+                $footer_image = get_option('mc_footer_site_image');
+                ?>
                 <table class="form-table">
                     <tr>
-                        <th>Footer Image URL</th>
-                        <td><input type="url" class="regular-text" name="mc_footer_site_image" value="<?php echo esc_attr(get_option('mc_footer_site_image')); ?>"></td>
+                        <th scope="row">Footer Image</th>
+                        <td>
+                            <div class="upload-container">
+                                <button type="button" class="button button-primary upload-button" id="upload_footer_image">
+                                    <span class="dashicons dashicons-upload" style="vertical-align: middle;"></span> Select or Upload Image
+                                </button>
+                                <button type="button" class="button remove-image" id="upload_footer_image-remove" <?php echo empty($footer_image) ? 'style="display:none;"' : ''; ?>>
+                                    <span class="dashicons dashicons-trash" style="vertical-align: middle;"></span> Remove Image
+                                </button>
+                                
+                                <div class="image-url-field">
+                                    <label>Image URL:</label>
+                                    <input type="url" class="regular-text" name="mc_footer_site_image" id="mc_footer_site_image" value="<?php echo esc_url($footer_image); ?>" readonly>
+                                    <p class="description">URL is automatically filled when you upload an image</p>
+                                </div>
+                                
+                                <div class="image-preview" id="footer_image_preview">
+                                    <?php if (!empty($footer_image)): ?>
+                                        <img src="<?php echo esc_url($footer_image); ?>" alt="Footer Image Preview">
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <th>Short Description</th>
+                        <th scope="row">Short Description</th>
                         <td><textarea class="large-text" rows="3" name="mc_footer_short_description"><?php echo esc_textarea(get_option('mc_footer_short_description')); ?></textarea></td>
                     </tr>
                     <tr>
-                        <th>Footer Menu Title</th>
+                        <th scope="row">Footer Menu Title</th>
                         <td><input type="text" class="regular-text" name="mc_footer_menu_title" value="<?php echo esc_attr(get_option('mc_footer_menu_title')); ?>"></td>
                     </tr>
                     <tr>
-                        <th>Copyright Text</th>
+                        <th scope="row">Copyright Text</th>
                         <td><input type="text" class="regular-text" name="mc_footer_copyright_text" value="<?php echo esc_attr(get_option('mc_footer_copyright_text')); ?>"></td>
                     </tr>
                 </table>
@@ -111,17 +264,21 @@ function mc_wp_theme_settings_page() {
                 <table class="form-table">
                     <?php
                     $socials = [
-                        'facebook','instagram','twitter','youtube','linkedin'
+                        'facebook' => 'Facebook',
+                        'instagram' => 'Instagram',
+                        'twitter' => 'Twitter/X',
+                        'youtube' => 'YouTube',
+                        'linkedin' => 'LinkedIn'
                     ];
-                    foreach ($socials as $s) { ?>
+                    foreach ($socials as $key => $label) { ?>
                         <tr>
-                            <th><?php echo ucfirst($s); ?> URL</th>
-                            <td><input type="url" class="regular-text" name="mc_social_<?php echo $s; ?>" value="<?php echo esc_attr(get_option("mc_social_$s")); ?>"></td>
+                            <th scope="row"><?php echo $label; ?> URL</th>
+                            <td><input type="url" class="regular-text" name="mc_social_<?php echo $key; ?>" value="<?php echo esc_attr(get_option("mc_social_$key")); ?>" placeholder="https://"></td>
                         </tr>
                     <?php } ?>
                     <tr>
-                        <th>WhatsApp Number</th>
-                        <td><input type="text" class="regular-text" name="mc_social_whatsapp" value="<?php echo esc_attr(get_option('mc_social_whatsapp')); ?>"></td>
+                        <th scope="row">WhatsApp Number</th>
+                        <td><input type="text" class="regular-text" name="mc_social_whatsapp" value="<?php echo esc_attr(get_option('mc_social_whatsapp')); ?>" placeholder="+1234567890"></td>
                     </tr>
                 </table>
             <?php }
@@ -130,21 +287,21 @@ function mc_wp_theme_settings_page() {
                 settings_fields('mc_wp_theme_contact_group'); ?>
                 <table class="form-table">
                     <tr>
-                        <th>Phone Number</th>
-                        <td><input type="text" class="regular-text" name="mc_contact_phone" value="<?php echo esc_attr(get_option('mc_contact_phone')); ?>"></td>
+                        <th scope="row">Phone Number</th>
+                        <td><input type="text" class="regular-text" name="mc_contact_phone" value="<?php echo esc_attr(get_option('mc_contact_phone')); ?>" placeholder="+1234567890"></td>
                     </tr>
                     <tr>
-                        <th>Email Address</th>
-                        <td><input type="email" class="regular-text" name="mc_contact_email" value="<?php echo esc_attr(get_option('mc_contact_email')); ?>"></td>
+                        <th scope="row">Email Address</th>
+                        <td><input type="email" class="regular-text" name="mc_contact_email" value="<?php echo esc_attr(get_option('mc_contact_email')); ?>" placeholder="info@example.com"></td>
                     </tr>
                     <tr>
-                        <th>Contact Address</th>
-                        <td><textarea class="large-text" rows="3" name="mc_contact_address"><?php echo esc_textarea(get_option('mc_contact_address')); ?></textarea></td>
+                        <th scope="row">Contact Address</th>
+                        <td><textarea class="large-text" rows="3" name="mc_contact_address" placeholder="Enter your address here..."><?php echo esc_textarea(get_option('mc_contact_address')); ?></textarea></td>
                     </tr>
                 </table>
             <?php }
 
-            submit_button();
+            submit_button('Save Settings');
             ?>
         </form>
     </div>

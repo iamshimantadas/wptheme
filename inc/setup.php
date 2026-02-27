@@ -78,6 +78,20 @@ function display_template_file_in_admin_bar($wp_admin_bar)
 add_action('admin_bar_menu', 'display_template_file_in_admin_bar', 999);
 
 
+/** woo helps functions */
+function mytheme_add_woocommerce_support()
+{
+     if ( class_exists( 'WooCommerce' ) ) {
+        add_theme_support('woocommerce');
+        add_theme_support( 'wc-product-gallery-zoom' );
+        add_theme_support( 'wc-product-gallery-lightbox' );
+        add_theme_support( 'wc-product-gallery-slider' );
+     }
+}
+add_action('after_setup_theme', 'mytheme_add_woocommerce_support');
+
+
+
 
 
 
