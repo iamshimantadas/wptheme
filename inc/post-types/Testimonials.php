@@ -38,7 +38,7 @@ function mc_register_testimonials_cpt() {
         'hierarchical'       => false,
         'show_in_menu'       => true,
         'menu_icon'          => 'dashicons-testimonial',
-        'show_in_rest'       => true,
+        'show_in_rest'       => false,
     );
 
     register_post_type('mc_testimonial', $args);
@@ -75,7 +75,7 @@ function mc_register_testimonial_taxonomy() {
             'with_front'   => false,
             'hierarchical' => true,
         ),
-        'show_in_rest' => true,
+        'show_in_rest' => false,
     ));
 }
 // add_action('init', 'mc_register_testimonial_taxonomy');

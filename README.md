@@ -28,7 +28,6 @@ MC_WP_Theme/
 │   └── img/
 │
 ├── inc/
-│   ├── setup.php
 │   └── post-types/
 │       ├── Services.php
 │       └── Testimonials.php
@@ -80,7 +79,6 @@ MC_WP_Theme/
 Acts as the **main bootstrap file**.
 
 Responsibilities:
-- Loads setup logic from `/inc/setup.php`
 - Loads custom post types
 - Includes `theme-settings.php`
 - Enqueues theme stylesheets and scripts
@@ -175,7 +173,7 @@ Settings are accessed using `get_option()`.
 
 ### Visual Reference
 
-![Theme Settings v1.0.1](./whats_new_1.PNG)
+![Theme Settings v1.0.1](whats_new_1.png)
 
 ---
 
@@ -203,6 +201,8 @@ You can:
 
 Personal and educational use.
 Free to modify and extend.
+Note: we have integrated acf pro plugin in it. source: https://github.com/wordpress-premium/advanced-custom-fields-pro
+Note: we have integrated elementor pro addons integrate plugin. source: https://github.com/proelements/proelements
 
 ---
 
