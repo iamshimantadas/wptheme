@@ -1,6 +1,6 @@
-# MC WP Theme
+# WP Theme
 
-**MC WP Theme** is a clean, modular, and developer-friendly **WordPress custom theme boilerplate** built for developers who want to create **scalable, maintainable, and extensible WordPress themes** for personal or client projects.
+**WP Theme** is a clean, modular, and developer-friendly **WordPress custom theme boilerplate** built for developers who want to create **scalable, maintainable, and extensible WordPress themes** for personal or client projects.
 
 This theme follows WordPress best practices, uses a clear folder structure, and separates concerns such as setup logic, custom post types, templates, assets, and global theme settings.
 
@@ -19,7 +19,7 @@ This theme follows WordPress best practices, uses a clear folder structure, and 
 ## 📁 Folder & File Structure Overview
 
 ```text
-MC_WP_Theme/
+wptheme/
 │
 ├── assets/
 │   ├── css/
@@ -28,6 +28,7 @@ MC_WP_Theme/
 │   └── img/
 │
 ├── inc/
+│   ├── setup.php
 │   └── post-types/
 │       ├── Services.php
 │       └── Testimonials.php
@@ -79,6 +80,7 @@ MC_WP_Theme/
 Acts as the **main bootstrap file**.
 
 Responsibilities:
+- Loads setup logic from `/inc/setup.php`
 - Loads custom post types
 - Includes `theme-settings.php`
 - Enqueues theme stylesheets and scripts
@@ -173,7 +175,7 @@ Settings are accessed using `get_option()`.
 
 ### Visual Reference
 
-![Theme Settings v1.0.1](whats_new_1.png)
+![Theme Settings v1.0.1](./whats_new_1.png)
 
 ---
 

@@ -7,50 +7,63 @@
  * 
  * register_setting('your_theme_group_name', 'key_to_save_in_DB_PREFIX_options', 'sanitize_callback');
  */
-function mc_wp_theme_register_settings() {
+function wp_theme_register_settings() {
 
     // Header
-    register_setting('mc_wp_theme_header_group', 'mc_header_site_image', 'esc_url_raw');
-    register_setting('mc_wp_theme_header_group', 'mc_header_cta_title', 'sanitize_text_field');
-    register_setting('mc_wp_theme_header_group', 'mc_header_cta_url', 'esc_url_raw');
+    register_setting('wp_theme_header_group', 'header_site_image', 'esc_url_raw');
+    register_setting('wp_theme_header_group', 'header_cta_title', 'sanitize_text_field');
+    register_setting('wp_theme_header_group', 'header_cta_url', 'esc_url_raw');
 
     // Footer
-    register_setting('mc_wp_theme_footer_group', 'mc_footer_site_image', 'esc_url_raw');
-    register_setting('mc_wp_theme_footer_group', 'mc_footer_short_description', 'sanitize_textarea_field');
-    register_setting('mc_wp_theme_footer_group', 'mc_footer_menu_title', 'sanitize_text_field');
-    register_setting('mc_wp_theme_footer_group', 'mc_footer_copyright_text', 'sanitize_text_field');
+    register_setting('wp_theme_footer_group', 'footer_site_image', 'esc_url_raw');
+    register_setting('wp_theme_footer_group', 'footer_short_description', 'sanitize_textarea_field');
+    register_setting('wp_theme_footer_group', 'footer_menu_title', 'sanitize_text_field');
+    register_setting('wp_theme_footer_group', 'footer_copyright_text', 'sanitize_text_field');
 
     // Social
-    register_setting('mc_wp_theme_social_group', 'mc_social_facebook', 'esc_url_raw');
-    register_setting('mc_wp_theme_social_group', 'mc_social_instagram', 'esc_url_raw');
-    register_setting('mc_wp_theme_social_group', 'mc_social_twitter', 'esc_url_raw');
-    register_setting('mc_wp_theme_social_group', 'mc_social_youtube', 'esc_url_raw');
-    register_setting('mc_wp_theme_social_group', 'mc_social_linkedin', 'esc_url_raw');
-    register_setting('mc_wp_theme_social_group', 'mc_social_whatsapp', 'sanitize_text_field');
+    register_setting('wp_theme_social_group', 'social_facebook', 'esc_url_raw');
+    register_setting('wp_theme_social_group', 'social_instagram', 'esc_url_raw');
+    register_setting('wp_theme_social_group', 'social_twitter', 'esc_url_raw');
+    register_setting('wp_theme_social_group', 'social_youtube', 'esc_url_raw');
+    register_setting('wp_theme_social_group', 'social_linkedin', 'esc_url_raw');
+    register_setting('wp_theme_social_group', 'social_whatsapp', 'sanitize_text_field');
 
     // Contact
-    register_setting('mc_wp_theme_contact_group', 'mc_contact_phone', 'sanitize_text_field');
-    register_setting('mc_wp_theme_contact_group', 'mc_contact_email', 'sanitize_email');
-    register_setting('mc_wp_theme_contact_group', 'mc_contact_address', 'sanitize_textarea_field');
+    register_setting('wp_theme_contact_group', 'contact_phone', 'sanitize_text_field');
+    register_setting('wp_theme_contact_group', 'contact_email', 'sanitize_email');
+    register_setting('wp_theme_contact_group', 'contact_address', 'sanitize_textarea_field');
 }
-add_action('admin_init', 'mc_wp_theme_register_settings');
+add_action('admin_init', 'wp_theme_register_settings');
 
 
 /* Options Page */
-function mc_wp_theme_add_options_page() {
-    add_options_page(
-        'Global Settings',
-        'Global Settings',
-        'manage_options',
-        'global-settings',
-        'mc_wp_theme_settings_page'
+// function wp_theme_add_options_page() {
+//     add_options_page(
+//         'Global Settings',
+//         'Global Settings',
+//         'manage_options',
+//         'global-settings',
+//         'wp_theme_settings_page'
+//     );
+// }
+// add_action('admin_menu', 'wp_theme_add_options_page');
+/* Options Page */
+function wp_theme_add_options_page() {
+    add_menu_page(
+        'Global Settings',        // Page title
+        'Global Settings',        // Menu title
+        'manage_options',         // Capability
+        'global-settings',        // Menu slug
+        'wp_theme_settings_page', // Callback function
+        'dashicons-palmtree',     // Icon (dashicons-palmtree)
+        30                        // Position (adjust as needed)
     );
 }
-add_action('admin_menu', 'mc_wp_theme_add_options_page');
+add_action('admin_menu', 'wp_theme_add_options_page');
 
 
 /* Enqueue Media Uploader Scripts */
-function mc_wp_theme_enqueue_media_uploader($hook) {
+function wp_theme_enqueue_media_uploader($hook) {
     if ('settings_page_global-settings' !== $hook) {
         return;
     }
@@ -110,8 +123,8 @@ function mc_wp_theme_enqueue_media_uploader($hook) {
             }
             
             // Setup uploaders for header and footer images
-            setupMediaUploader("#upload_header_image", "#mc_header_site_image", "#header_image_preview");
-            setupMediaUploader("#upload_footer_image", "#mc_footer_site_image", "#footer_image_preview");
+            setupMediaUploader("#upload_header_image", "#header_site_image", "#header_image_preview");
+            setupMediaUploader("#upload_footer_image", "#footer_site_image", "#footer_image_preview");
         });
     ');
     
@@ -154,10 +167,10 @@ function mc_wp_theme_enqueue_media_uploader($hook) {
         }
     ');
 }
-add_action('admin_enqueue_scripts', 'mc_wp_theme_enqueue_media_uploader');
+add_action('admin_enqueue_scripts', 'wp_theme_enqueue_media_uploader');
 
 /* Page Callback */
-function mc_wp_theme_settings_page() {
+function wp_theme_settings_page() {
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'header';
     ?>
     <div class="wrap">
@@ -174,8 +187,8 @@ function mc_wp_theme_settings_page() {
             <?php
 
             if ($tab === 'header') {
-                settings_fields('mc_wp_theme_header_group'); 
-                $header_image = get_option('mc_header_site_image');
+                settings_fields('wp_theme_header_group'); 
+                $header_image = get_option('header_site_image');
                 ?>
                 <table class="form-table">
                     <tr>
@@ -191,7 +204,7 @@ function mc_wp_theme_settings_page() {
                                 
                                 <div class="image-url-field">
                                     <label>Image URL:</label>
-                                    <input type="url" class="regular-text" name="mc_header_site_image" id="mc_header_site_image" value="<?php echo esc_url($header_image); ?>" readonly>
+                                    <input type="url" class="regular-text" name="header_site_image" id="header_site_image" value="<?php echo esc_url($header_image); ?>" readonly>
                                     <p class="description">URL is automatically filled when you upload an image</p>
                                 </div>
                                 
@@ -205,18 +218,18 @@ function mc_wp_theme_settings_page() {
                     </tr>
                     <tr>
                         <th scope="row">CTA Button Title</th>
-                        <td><input type="text" class="regular-text" name="mc_header_cta_title" value="<?php echo esc_attr(get_option('mc_header_cta_title')); ?>"></td>
+                        <td><input type="text" class="regular-text" name="header_cta_title" value="<?php echo esc_attr(get_option('header_cta_title')); ?>"></td>
                     </tr>
                     <tr>
                         <th scope="row">CTA Button URL</th>
-                        <td><input type="url" class="regular-text" name="mc_header_cta_url" value="<?php echo esc_attr(get_option('mc_header_cta_url')); ?>"></td>
+                        <td><input type="url" class="regular-text" name="header_cta_url" value="<?php echo esc_attr(get_option('header_cta_url')); ?>"></td>
                     </tr>
                 </table>
             <?php }
 
             if ($tab === 'footer') {
-                settings_fields('mc_wp_theme_footer_group'); 
-                $footer_image = get_option('mc_footer_site_image');
+                settings_fields('wp_theme_footer_group'); 
+                $footer_image = get_option('footer_site_image');
                 ?>
                 <table class="form-table">
                     <tr>
@@ -232,7 +245,7 @@ function mc_wp_theme_settings_page() {
                                 
                                 <div class="image-url-field">
                                     <label>Image URL:</label>
-                                    <input type="url" class="regular-text" name="mc_footer_site_image" id="mc_footer_site_image" value="<?php echo esc_url($footer_image); ?>" readonly>
+                                    <input type="url" class="regular-text" name="footer_site_image" id="footer_site_image" value="<?php echo esc_url($footer_image); ?>" readonly>
                                     <p class="description">URL is automatically filled when you upload an image</p>
                                 </div>
                                 
@@ -246,21 +259,21 @@ function mc_wp_theme_settings_page() {
                     </tr>
                     <tr>
                         <th scope="row">Short Description</th>
-                        <td><textarea class="large-text" rows="3" name="mc_footer_short_description"><?php echo esc_textarea(get_option('mc_footer_short_description')); ?></textarea></td>
+                        <td><textarea class="large-text" rows="3" name="footer_short_description"><?php echo esc_textarea(get_option('footer_short_description')); ?></textarea></td>
                     </tr>
                     <tr>
                         <th scope="row">Footer Menu Title</th>
-                        <td><input type="text" class="regular-text" name="mc_footer_menu_title" value="<?php echo esc_attr(get_option('mc_footer_menu_title')); ?>"></td>
+                        <td><input type="text" class="regular-text" name="footer_menu_title" value="<?php echo esc_attr(get_option('footer_menu_title')); ?>"></td>
                     </tr>
                     <tr>
                         <th scope="row">Copyright Text</th>
-                        <td><input type="text" class="regular-text" name="mc_footer_copyright_text" value="<?php echo esc_attr(get_option('mc_footer_copyright_text')); ?>"></td>
+                        <td><input type="text" class="regular-text" name="footer_copyright_text" value="<?php echo esc_attr(get_option('footer_copyright_text')); ?>"></td>
                     </tr>
                 </table>
             <?php }
 
             if ($tab === 'social') {
-                settings_fields('mc_wp_theme_social_group'); ?>
+                settings_fields('wp_theme_social_group'); ?>
                 <table class="form-table">
                     <?php
                     $socials = [
@@ -273,30 +286,30 @@ function mc_wp_theme_settings_page() {
                     foreach ($socials as $key => $label) { ?>
                         <tr>
                             <th scope="row"><?php echo $label; ?> URL</th>
-                            <td><input type="url" class="regular-text" name="mc_social_<?php echo $key; ?>" value="<?php echo esc_attr(get_option("mc_social_$key")); ?>" placeholder="https://"></td>
+                            <td><input type="url" class="regular-text" name="social_<?php echo $key; ?>" value="<?php echo esc_attr(get_option("social_$key")); ?>" placeholder="https://"></td>
                         </tr>
                     <?php } ?>
                     <tr>
                         <th scope="row">WhatsApp Number</th>
-                        <td><input type="text" class="regular-text" name="mc_social_whatsapp" value="<?php echo esc_attr(get_option('mc_social_whatsapp')); ?>" placeholder="+1234567890"></td>
+                        <td><input type="text" class="regular-text" name="social_whatsapp" value="<?php echo esc_attr(get_option('social_whatsapp')); ?>" placeholder="+1234567890"></td>
                     </tr>
                 </table>
             <?php }
 
             if ($tab === 'contact') {
-                settings_fields('mc_wp_theme_contact_group'); ?>
+                settings_fields('wp_theme_contact_group'); ?>
                 <table class="form-table">
                     <tr>
                         <th scope="row">Phone Number</th>
-                        <td><input type="text" class="regular-text" name="mc_contact_phone" value="<?php echo esc_attr(get_option('mc_contact_phone')); ?>" placeholder="+1234567890"></td>
+                        <td><input type="text" class="regular-text" name="contact_phone" value="<?php echo esc_attr(get_option('contact_phone')); ?>" placeholder="+1234567890"></td>
                     </tr>
                     <tr>
                         <th scope="row">Email Address</th>
-                        <td><input type="email" class="regular-text" name="mc_contact_email" value="<?php echo esc_attr(get_option('mc_contact_email')); ?>" placeholder="info@example.com"></td>
+                        <td><input type="email" class="regular-text" name="contact_email" value="<?php echo esc_attr(get_option('contact_email')); ?>" placeholder="info@example.com"></td>
                     </tr>
                     <tr>
                         <th scope="row">Contact Address</th>
-                        <td><textarea class="large-text" rows="3" name="mc_contact_address" placeholder="Enter your address here..."><?php echo esc_textarea(get_option('mc_contact_address')); ?></textarea></td>
+                        <td><textarea class="large-text" rows="3" name="contact_address" placeholder="Enter your address here..."><?php echo esc_textarea(get_option('contact_address')); ?></textarea></td>
                     </tr>
                 </table>
             <?php }

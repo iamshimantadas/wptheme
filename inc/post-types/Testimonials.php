@@ -3,7 +3,7 @@
 /**
  * Register Testimonials Custom Post Type
  */
-function mc_register_testimonials_cpt() {
+function wptheme_register_testimonials_cpt() {
 
     $supports = array(
         'title',
@@ -41,17 +41,17 @@ function mc_register_testimonials_cpt() {
         'show_in_rest'       => false,
     );
 
-    register_post_type('mc_testimonial', $args);
+    register_post_type('wptheme_testimonial', $args);
 }
-// add_action('init', 'mc_register_testimonials_cpt');
+// add_action('init', 'wptheme_register_testimonials_cpt');
 
 
 /**
  * Register Testimonial Category Taxonomy
  */
-function mc_register_testimonial_taxonomy() {
+function wptheme_register_testimonial_taxonomy() {
 
-    register_taxonomy('testimonial_category', 'mc_testimonial', array(
+    register_taxonomy('testimonial_category', 'wptheme_testimonial', array(
         'hierarchical'      => true,
         'show_ui'           => true,
         'show_admin_column' => true,
@@ -78,4 +78,4 @@ function mc_register_testimonial_taxonomy() {
         'show_in_rest' => false,
     ));
 }
-// add_action('init', 'mc_register_testimonial_taxonomy');
+// add_action('init', 'wptheme_register_testimonial_taxonomy');
