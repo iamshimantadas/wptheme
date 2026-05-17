@@ -25,11 +25,10 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <?php
-                        // wp_nav_menu(array(
-                        // 'menu' => 'Navbar-Menu',
-                        // 'container' => false,
-                        // 'items_wrap' => '%3$s'
-                        // ));
+                         wp_nav_menu(array(
+                            'theme_location' => 'primary_menu',
+                            // 'menu_class' => 'navbar-nav me-auto mb-2 mb-lg-0', // add class inside <ul> tag
+                        ));
                         ?>
                     </div>
                 </div>

@@ -35,9 +35,9 @@ add_action('wp_enqueue_scripts', 'custom_theme_assets');
 /** register menus */
 function mytheme_register_nav_menu(){
 		register_nav_menus( array(
-	    	'primary_menu' => __( 'Header Menu', 'mcwptheme' ),
-	    	'footer_menu'  => __( 'Footer Menu', 'mcwptheme' ),
-            'copyright_menu'  => __( 'Footer Copytight Menu', 'mcwptheme' ),
+	    	'primary_menu' => __( 'Header Menu', 'wptheme' ),
+	    	'footer_menu'  => __( 'Footer Menu', 'wptheme' ),
+            'copyright_menu'  => __( 'Footer Copytight Menu', 'wptheme' ),
 		) );
 }
 // add_action( 'after_setup_theme', 'mytheme_register_nav_menu', 0 );
