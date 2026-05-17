@@ -9,7 +9,7 @@
 /**
  * registering cpt(our_service)
  */
-function mc_wp_cpt__services() {
+function wptheme_wp_cpt__services() {
     $supports = array(
     'title', 
     'editor', 
@@ -48,11 +48,11 @@ function mc_wp_cpt__services() {
     );
     register_post_type('our_service', $args);
     } 
-//  add_action('init', 'mc_wp_cpt__services');
+//  add_action('init', 'wptheme_wp_cpt__services');
 
 
 /**adding taxonomy to post type ~ our_service */
-function mc_wp_cpt_service_custom_taxonomy() {
+function wptheme_wp_cpt_service_custom_taxonomy() {
     // Add new "Category" taxonomy to Posts
     register_taxonomy('service_category', 'our_service', array(
       // Hierarchical taxonomy (like categories)
@@ -82,7 +82,7 @@ function mc_wp_cpt_service_custom_taxonomy() {
       ),
     ));
   }
-// add_action( 'init', 'mc_wp_cpt_service_custom_taxonomy', 0 );
+// add_action( 'init', 'wptheme_wp_cpt_service_custom_taxonomy', 0 );
 
 
 ?>

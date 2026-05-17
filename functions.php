@@ -2,6 +2,10 @@
 
 /** theme settings configuration ex: global header, footer */
 // require_once(get_template_directory() . '/theme-settings.php');
+<<<<<<< HEAD
+=======
+// require_once(get_template_directory() . '/rest-functions.php');
+>>>>>>> aaf6a9fa292b30c0eb025b7708e616c2588acc01
 
 /** including CPTs */
 // include_once(get_template_directory().'/inc/post-types/'.'Services.php');
