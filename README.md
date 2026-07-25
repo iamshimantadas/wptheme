@@ -173,14 +173,6 @@ Settings are accessed using `get_option()`.
 - Improved modular architecture
 - Removed unused templates
 
-<<<<<<< HEAD
-=======
-### Visual Reference
-
-![Theme Settings v1.0.1](./whats_new_1.png)
-
->>>>>>> aaf6a9fa292b30c0eb025b7708e616c2588acc01
----
 
 ## 🧑‍💻 Who Should Use This Theme?
 
